@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音声入力SOAPノート</title>
+  <style>
+/* ==========================================================================
+   音声入力SOAPノート - 単一完結型スタイルシート (Modern, Clean, Responsive)
+   ========================================================================== */
+
+:root {
+  /* 基本カラーパレット */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-main: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-focus: #3b82f6;
+
+  /* SOAP固有カラー */
+  /* S: 主観的情報 (青系) */
+  --soap-s-main: #2563eb;
+  --soap-s-bg: #eff6ff;
+  --soap-s-border: #bfdbfe;
+  --soap-s-badge: #dbeafe;
+  --soap-s-text: #1e40af;
+  --soap-s-highlight: #bfdbfe;
+
+  /* O: 客観的情報 (緑系) */
+  --soap-o-main: #16a34a;
+  --soap-o-bg: #f0fdf4;
+  --soap-o-border: #bbf7d0;
+  --soap-o-badge: #dcfce7;
+  --soap-o-text: #166534;
+  --soap-o-highlight: #bbf7d0;
+
+  /* A: 評価・分析 (黄・アンバー系) */
+  --soap-a-main: #d97706;
+  --soap-a-bg: #fffbeb;
+  --soap-a-border: #fde68a;
+  --soap-a-badge: #fef3c7;
+  --soap-a-text: #92400e;
+  --soap-a-highlight: #fde68a;
+
+  /* P: 治療・支援計画 (赤系) */
+  --soap-p-main: #dc2626;
+  --soap-p-bg: #fef2f2;
+  --soap-p-border: #fecaca;
+  --soap-p-badge: #fee2e2;
+  --soap-p-text: #991b1b;
+  --soap-p-highlight: #fecaca;
+
+  /* 未分類 (グレー系) */
+  --soap-u-main: #64748b;
+  --soap-u-bg: #f8fafc;
+  --soap-u-border: #e2e8f0;
+  --soap-u-badge: #f1f5f9;
+  --soap-u-text: #334155;
+
+  /* UIアクセント */
+  --accent-record: #ef4444;
+  --accent-record-hover: #dc2626;
+  --accent-primary: #2563eb;
+  --accent-primary-hover: #1d4ed8;
+
+  /* 角丸 & 影 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+
+  /* タイポグラフィ（読みやすいゴシック体） */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, Roboto, sans-serif;
+}
+
+/* リセット & 基本設定 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: #f8fafc;
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* アプリケーション全体コンテナ */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   ヘッダー
+   ========================================================================== */
+.app-header {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 20px 28px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+  flex-shrink: 0;
+}
+
+.header-title-wrap h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.header-title-wrap .subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   メインエリア & カード共通
+   ========================================================================== */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title-with-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* 録音状態バッジ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.status-idle {
+  background-color: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.status-recording {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* ==========================================================================
+   ボタン類スタイル
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+  user-select: none;
+  text-decoration: none;
+  min-height: 42px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  min-height: 34px;
+}
+
+/* 録音開始ボタン */
+.btn-record {
+  background: var(--accent-record);
+  color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+}
+
+.btn-record:hover:not(:disabled) {
+  background: var(--accent-record-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+.record-pulse-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+/* 録音停止ボタン */
+.btn-stop {
+  background: #ffffff;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.btn-stop:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.stop-icon {
+  width: 10px;
+  height: 10px;
+  background-color: #dc2626;
+  border-radius: 2px;
+}
+
+/* プライマリボタン (SOAP変換) */
+.btn-primary {
+  background: var(--accent-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* セカンダリボタン */
+.btn-secondary {
+  background: #ffffff;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: #cbd5e1;
+}
+
+/* テキストボタン */
+.btn-text {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+
+.btn-text:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-main);
+}
+
+/* コントロールツールバー */
+.controls-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.primary-controls, .secondary-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   音声認識アニメーションバー
+   ========================================================================== */
+.voice-wave-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  color: #1d4ed8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.wave-bar {
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: #3b82f6;
+  border-radius: 2px;
+  animation: wave-animation 1.2s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.wave-bar:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes wave-animation {
+  0%, 100% { height: 8px; opacity: 0.5; }
+  50% { height: 22px; opacity: 1; }
+}
+
+.wave-text {
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   アラートコンポーネント
+   ========================================================================== */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+}
+
+.alert-warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.alert-danger {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.alert-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.alert-body strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ==========================================================================
+   テキストエディタ
+   ========================================================================== */
+.editor-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.text-editor {
+  width: 100%;
+  min-height: 140px;
+  padding: 16px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-main);
+  background: #ffffff;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.text-editor:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.text-editor::placeholder {
+  color: #94a3b8;
+  font-size: 0.9375rem;
+}
+
+/* 認識中の中間結果表示 */
+.interim-text {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 3px solid #3b82f6;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  color: #2563eb;
+  font-style: italic;
+  pointer-events: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.editor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.hint-text {
+  font-size: 0.775rem;
+}
+
+/* ==========================================================================
+   SOAP 結果セクション
+   ========================================================================== */
+.soap-results-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.results-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.results-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.badge-count {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.results-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* SOAP グリッドレイアウト (2列デスクトップ、1列スマホ) */
+.soap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .soap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* SOAP 各カードデザイン */
+.soap-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-top-width: 4px;
+  border-top-style: solid;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.soap-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* S=青, O=緑, A=黄, P=赤, 未分類=グレー */
+.soap-card-s {
+  border-top-color: var(--soap-s-main);
+}
+.soap-card-s .soap-letter {
+  background: var(--soap-s-main);
+  color: #ffffff;
+}
+.soap-card-s .soap-count {
+  background: var(--soap-s-badge);
+  color: var(--soap-s-text);
+}
+.soap-card-s .soap-card-header {
+  background: var(--soap-s-bg);
+}
+
+.soap-card-o {
+  border-top-color: var(--soap-o-main);
+}
+.soap-card-o .soap-letter {
+  background: var(--soap-o-main);
+  color: #ffffff;
+}
+.soap-card-o .soap-count {
+  background: var(--soap-o-badge);
+  color: var(--soap-o-text);
+}
+.soap-card-o .soap-card-header {
+  background: var(--soap-o-bg);
+}
+
+.soap-card-a {
+  border-top-color: var(--soap-a-main);
+}
+.soap-card-a .soap-letter {
+  background: var(--soap-a-main);
+  color: #ffffff;
+}
+.soap-card-a .soap-count {
+  background: var(--soap-a-badge);
+  color: var(--soap-a-text);
+}
+.soap-card-a .soap-card-header {
+  background: var(--soap-a-bg);
+}
+
+.soap-card-p {
+  border-top-color: var(--soap-p-main);
+}
+.soap-card-p .soap-letter {
+  background: var(--soap-p-main);
+  color: #ffffff;
+}
+.soap-card-p .soap-count {
+  background: var(--soap-p-badge);
+  color: var(--soap-p-text);
+}
+.soap-card-p .soap-card-header {
+  background: var(--soap-p-bg);
+}
+
+.soap-card-unclassified {
+  border-top-color: var(--soap-u-main);
+  margin-top: 4px;
+}
+.soap-card-unclassified .soap-letter {
+  background: var(--soap-u-main);
+  color: #ffffff;
+}
+.soap-card-unclassified .soap-count {
+  background: var(--soap-u-badge);
+  color: var(--soap-u-text);
+}
+.soap-card-unclassified .soap-card-header {
+  background: var(--soap-u-bg);
+}
+
+/* カードヘッダー */
+.soap-card-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.soap-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.soap-letter {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.soap-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.soap-desc {
+  font-size: 0.775rem;
+  color: var(--text-secondary);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.soap-count {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
+.btn-copy-card {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-copy-card:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-main);
+  border-color: #cbd5e1;
+}
+
+/* カードボディ */
+.soap-card-body {
+  padding: 18px 20px;
+  min-height: 120px;
+  flex-grow: 1;
+}
+
+.empty-state {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  background: #fafafa;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-color);
+}
+
+/* 分類された文のリスト */
+.soap-item-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.soap-item {
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border-left: 3px solid transparent;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  position: relative;
+  transition: background-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.soap-item-text {
+  word-break: break-word;
+}
+
+.soap-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.soap-kw-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+}
+
+.soap-item:hover {
+  background: #f1f5f9;
+}
+
+.soap-card-s .soap-item {
+  border-left-color: var(--soap-s-main);
+}
+.soap-card-o .soap-item {
+  border-left-color: var(--soap-o-main);
+}
+.soap-card-a .soap-item {
+  border-left-color: var(--soap-a-main);
+}
+.soap-card-p .soap-item {
+  border-left-color: var(--soap-p-main);
+}
+.soap-card-unclassified .soap-item {
+  border-left-color: var(--soap-u-main);
+}
+
+/* キーワードハイライトマーク */
+.kw-highlight {
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.soap-card-s .kw-highlight {
+  background-color: var(--soap-s-highlight);
+  color: var(--soap-s-text);
+}
+.soap-card-o .kw-highlight {
+  background-color: var(--soap-o-highlight);
+  color: var(--soap-o-text);
+}
+.soap-card-a .kw-highlight {
+  background-color: var(--soap-a-highlight);
+  color: var(--soap-a-text);
+}
+.soap-card-p .kw-highlight {
+  background-color: var(--soap-p-highlight);
+  color: var(--soap-p-text);
+}
+
+/* カードフッター */
+.soap-card-footer {
+  padding: 10px 20px;
+  background: #ffffff;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.keywords-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.keyword-tags {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   トースト通知
+   ========================================================================== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.hidden {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   フッター
+   ========================================================================== */
+.app-footer {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  padding: 16px 0;
+}
+
+/* ==========================================================================
+   レスポンシブ調整 (モバイル・タブレット)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 16px 12px 32px;
+    gap: 18px;
+  }
+
+  .app-header {
+    padding: 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    width: 100%;
+  }
+
+  .controls-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primary-controls, .secondary-controls {
+    width: 100%;
+  }
+
+  .primary-controls .btn, .secondary-controls .btn {
+    flex: 1;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .results-actions {
+    width: 100%;
+  }
+
+  .results-actions .btn {
+    flex: 1;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="header-title-wrap">
+          <div class="logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="22"></line>
+              <line x1="8" y1="22" x2="16" y2="22"></line>
+            </svg>
+          </div>
+          <div>
+            <h1>音声入力SOAPノート</h1>
+            <p class="subtitle">音声でカルテ・経過記録を話すだけで、SOAP形式に自動振り分け</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btnLoadSample" class="btn btn-secondary btn-sm" title="医療・リハビリのサンプル文章をセットします">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            サンプル文章を入力
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <!-- 音声入力コントロールパネル -->
+      <section class="card input-section" aria-labelledby="input-heading">
+        <div class="card-header">
+          <div class="title-with-badge">
+            <h2 id="input-heading" class="card-title">音声入力・テキスト確認</h2>
+            <span id="recordingStatusBadge" class="status-badge status-idle">
+              <span class="status-dot"></span>
+              <span id="statusText">待機中</span>
+            </span>
+          </div>
+          <div class="action-btn-group">
+            <button id="btnClear" class="btn btn-text btn-sm" title="テキストを消去">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              クリア
+            </button>
+          </div>
+        </div>
+
+        <!-- コントロールボタン群 -->
+        <div class="controls-toolbar">
+          <div class="primary-controls">
+            <button id="btnStartRecord" class="btn btn-record">
+              <span class="record-pulse-icon" aria-hidden="true"></span>
+              <span class="btn-text">録音開始</span>
+            </button>
+            <button id="btnStopRecord" class="btn btn-stop" disabled>
+              <span class="stop-icon" aria-hidden="true"></span>
+              <span class="btn-text">録音停止</span>
+            </button>
+          </div>
+          <div class="secondary-controls">
+            <button id="btnConvertSoap" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>SOAP変換</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- リアルタイム認識アニメーションインジケーター -->
+        <div id="liveVoiceWave" class="voice-wave-container hidden" aria-live="polite">
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-text">音声をリアルタイムで聞き取っています...</span>
+        </div>
+
+        <!-- ブラウザ非対応警告（非対応ブラウザのみ表示） -->
+        <div id="browserWarning" class="alert alert-warning hidden" role="alert">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-body">
+            <strong>お使いのブラウザは Web Speech API に対応していません。</strong>
+            Google Chrome または Microsoft Edge でご利用いただくか、下の入力欄に直接テキストを入力・ペーストして「SOAP変換」をお試しください。
+          </div>
+        </div>
+
+        <!-- マイク権限・エラー案内 -->
+        <div id="errorAlert" class="alert alert-danger hidden" role="alert">
+          <div class="alert-icon">❌</div>
+          <div class="alert-body" id="errorMessage">エラーが発生しました。</div>
+        </div>
+
+        <!-- テキストエリア（リアルタイム表示 ＆ 直接編集可能） -->
+        <div class="editor-wrap">
+          <label for="rawTextInput" class="sr-only">認識テキスト</label>
+          <textarea 
+            id="rawTextInput" 
+            class="text-editor" 
+            placeholder="「録音開始」を押してマイクに向かって話すか、直接テキストを入力してください。&#10;&#10;例：&#10;「右膝がズキズキ痛いと訴えがある。膝関節ROMは屈曲110度、歩行スピードは低下している。大腿四頭筋の筋力低下が原因と考えられる。週3回の自主トレ指導と歩行プログラムを実施する。」"
+            rows="6"
+          ></textarea>
+          <!-- 認識中の暫定テキストオーバーレイ -->
+          <div id="interimTranscript" class="interim-text hidden" aria-live="polite"></div>
+        </div>
+
+        <div class="editor-footer">
+          <span id="charCount" class="text-muted">文字数: 0</span>
+          <span class="text-muted hint-text">※ 句点（。）や改行ごとに文章を自動分割してSOAPに振り分けます</span>
+        </div>
+      </section>
+
+      <!-- SOAP出力結果セクション -->
+      <section class="soap-results-section" aria-labelledby="soap-heading">
+        <div class="results-header">
+          <div class="results-title-group">
+            <h2 id="soap-heading" class="results-title">SOAP分析結果</h2>
+            <span id="totalSentenceCount" class="badge-count">全 0 文</span>
+          </div>
+          <div class="results-actions">
+            <button id="btnCopyAll" class="btn btn-secondary btn-sm" title="SOAP全体をクリップボードにコピー">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              全項目をコピー
+            </button>
+            <button id="btnExportTxt" class="btn btn-secondary btn-sm" title="テキストファイルとして保存">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              書き出し
+            </button>
+          </div>
+        </div>
+
+        <!-- 4つのSOAPカード + 未分類カード -->
+        <div class="soap-grid">
+          <!-- S (主観的情報) -->
+          <article class="soap-card soap-card-s" id="card-s">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">S</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Subjective（主観的情報）</h3>
+                  <p class="soap-desc">患者の自覚症状・訴え・不安・睡眠など</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-s">0 件</span>
+                <button class="btn-copy-card" data-target="s" title="Sセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-s">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">痛い, つらい, しびれる, だるい, 動かしにくい, 不安, 眠れない, 訴え</span>
+            </footer>
+          </article>
+
+          <!-- O (客観的情報) -->
+          <article class="soap-card soap-card-o" id="card-o">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">O</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Objective（客観的情報）</h3>
+                  <p class="soap-desc">ROM・MMT・測定値・バイタル・歩行観察など</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-o">0 件</span>
+                <button class="btn-copy-card" data-target="o" title="Oセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-o">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">ROM, MMT, 度, cm, kg, mmHg, 回, 秒, 歩行, 握力, バイタル, 腫脹, 熱感, 発赤</span>
+            </footer>
+          </article>
+
+          <!-- A (評価) -->
+          <article class="soap-card soap-card-a" id="card-a">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">A</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Assessment（評価・分析）</h3>
+                  <p class="soap-desc">原因分析・問題点の抽出・改善度・リスク判定</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-a">0 件</span>
+                <button class="btn-copy-card" data-target="a" title="Aセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-a">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">考えられる, 原因, 問題, 改善, 低下, 制限, リスク, 評価</span>
+            </footer>
+          </article>
+
+          <!-- P (計画) -->
+          <article class="soap-card soap-card-p" id="card-p">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">P</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Plan（治療・支援計画）</h3>
+                  <p class="soap-desc">プログラム・自主トレ指導・目標設定・退院支援</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-p">0 件</span>
+                <button class="btn-copy-card" data-target="p" title="Pセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-p">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">プログラム, 目標, 実施, 継続, 指導, 週, セット, 退院, 自主トレ</span>
+            </footer>
+          </article>
+        </div>
+
+        <!-- 未分類セクション -->
+        <article class="soap-card soap-card-unclassified" id="card-unclassified">
+          <header class="soap-card-header">
+            <div class="soap-badge-title">
+              <span class="soap-letter">?</span>
+              <div class="soap-title-wrap">
+                <h3 class="soap-name">未分類（Unclassified）</h3>
+                <p class="soap-desc">指定キーワードに一致しなかった文</p>
+              </div>
+            </div>
+            <div class="card-meta">
+              <span class="soap-count" id="count-unclassified">0 件</span>
+              <button class="btn-copy-card" data-target="unclassified" title="未分類セクションをコピー">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </header>
+          <div class="soap-card-body" id="list-unclassified">
+            <div class="empty-state">該当する情報はありません</div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- コピー完了トースト通知 -->
+    <div id="toastNotification" class="toast hidden" role="status" aria-live="polite">
+      クリップボードにコピーしました
+    </div>
+
+    <!-- フッター -->
+    <footer class="app-footer">
+      <p>音声入力SOAPノート &copy; 2026 — ブラウザ標準の Web Speech API を活用したセキュアなローカル処理</p>
+    </footer>
+  </div>
+
+  <!-- スクリプト埋め込み (完全スタンドアロン) -->
+  <script>
+/**
+ * 1. SOAP分類ロジック
+ */
+const SOAP_RULES = {
+  S: {
+    name: 'Subjective（主観的情報）',
+    keywords: [
+      '痛い', '痛む', '痛み', '疼痛', 'つらい', '辛い', 'しびれる', '痺れる', 'しびれ', '痺れ',
+      'だるい', '倦怠感', '動かしにくい', '不安', '心配', '眠れない', '不眠', '訴え', '訴える',
+      '苦しい', '違和感', 'こわばる', '張る', '気分'
+    ]
+  },
+  O: {
+    name: 'Objective（客観的情報）',
+    keywords: [
+      'ROM', 'rom', 'MMT', 'mmt', '度', 'cm', 'CM', 'kg', 'KG', 'mmHg', 'MMHG',
+      '回', '秒', '分', '歩行', '握力', 'バイタル', '血圧', '脈拍', '心拍', 'SpO2', '体温',
+      '腫脹', '腫れ', '熱感', '発赤', '浮腫', '可動域', '徒手筋力テスト', '反射', '検査'
+    ]
+  },
+  A: {
+    name: 'Assessment（評価・分析）',
+    keywords: [
+      '考えられる', '考える', '原因', '問題', '課題', '改善', '向上',
+      '低下', '減弱', '制限', '障害', 'リスク', '危険性', '評価', '分析',
+      '影響', '可能性', '予後', '要因'
+    ]
+  },
+  P: {
+    name: 'Plan（治療・支援計画）',
+    keywords: [
+      'プログラム', '目標', 'ゴール', '実施', '行う', '継続', '進める',
+      '指導', 'アドバイス', '週', '回', 'セット', '退院', '自主トレ',
+      '処方', 'リハビリ', '訓練', '介入', '予定', '次回'
+    ]
+  }
+};
+
+function splitSentences(text) {
+  if (!text || typeof text !== 'string') return [];
+  const rawParts = text
+    .replace(/[\r\n]+/g, '。\n')
+    .split(/(?<=[。！？!?\n])/);
+
+  const sentences = [];
+  for (let part of rawParts) {
+    const trimmed = part.trim().replace(/^[\n\r]+|[\n\r]+$/g, '');
+    if (trimmed.length > 0) {
+      sentences.push(trimmed);
+    }
+  }
+
+  if (sentences.length === 0 && text.trim().length > 0) {
+    sentences.push(text.trim());
+  }
+
+  return sentences;
+}
+
+function matchKeywords(sentence, keywords) {
+  const matchedList = [];
+  const lowerSentence = sentence.toLowerCase();
+
+  for (const kw of keywords) {
+    const lowerKw = kw.toLowerCase();
+    if (lowerSentence.includes(lowerKw)) {
+      matchedList.push(kw);
+    }
+  }
+
+  return {
+    matched: matchedList.length > 0,
+    keywords: Array.from(new Set(matchedList))
+  };
+}
+
+function highlightKeywords(sentence, matchedKeywords) {
+  if (!matchedKeywords || matchedKeywords.length === 0) {
+    return escapeHtml(sentence);
+  }
+
+  const sorted = [...matchedKeywords].sort((a, b) => b.length - a.length);
+  const pattern = new RegExp(`(${sorted.map(escapeRegExp).join('|')})`, 'gi');
+  const escaped = escapeHtml(sentence);
+  return escaped.replace(pattern, '<mark class="kw-highlight">$1</mark>');
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function classifySoapText(fullText) {
+  const sentences = splitSentences(fullText);
+  const results = { s: [], o: [], a: [], p: [], unclassified: [] };
+
+  for (const sentence of sentences) {
+    const matchS = matchKeywords(sentence, SOAP_RULES.S.keywords);
+    const matchO = matchKeywords(sentence, SOAP_RULES.O.keywords);
+    const matchA = matchKeywords(sentence, SOAP_RULES.A.keywords);
+    const matchP = matchKeywords(sentence, SOAP_RULES.P.keywords);
+
+    let classified = false;
+
+    if (matchS.matched) {
+      results.s.push({
+        sentence,
+        html: highlightKeywords(sentence, matchS.keywords),
+        keywords: matchS.keywords
+      });
+      classified = true;
+    }
+
+    if (matchO.matched) {
+      results.o.push({
+        sentence,
+        html: highlightKeywords(sentence, matchO.keywords),
+        keywords: matchO.keywords
+      });
+      classified = true;
+    }
+
+    if (matchA.matched) {
+      results.a.push({
+        sentence,
+        html: highlightKeywords(sentence, matchA.keywords),
+        keywords: matchA.keywords
+      });
+      classified = true;
+    }
+
+    if (matchP.matched) {
+      results.p.push({
+        sentence,
+        html: highlightKeywords(sentence, matchP.keywords),
+        keywords: matchP.keywords
+      });
+      classified = true;
+    }
+
+    if (!classified) {
+      results.unclassified.push({
+        sentence,
+        html: escapeHtml(sentence),
+        keywords: []
+      });
+    }
+  }
+
+  const counts = {
+    s: results.s.length,
+    o: results.o.length,
+    a: results.a.length,
+    p: results.p.length,
+    unclassified: results.unclassified.length,
+    total: sentences.length
+  };
+
+  return { sentences, categories: results, counts };
+}
+
+function formatSoapAsText(classification) {
+  const { categories } = classification;
+  const sections = [];
+
+  const addSection = (title, items) => {
+    sections.push(`【${title}】`);
+    if (items.length === 0) {
+      sections.push('（記載なし）\n');
+    } else {
+      items.forEach(item => sections.push(`・${item.sentence}`));
+      sections.push('');
+    }
+  };
+
+  addSection('S: 主観的情報 (Subjective)', categories.s);
+  addSection('O: 客観的情報 (Objective)', categories.o);
+  addSection('A: 評価・分析 (Assessment)', categories.a);
+  addSection('P: 治療・支援計画 (Plan)', categories.p);
+
+  if (categories.unclassified.length > 0) {
+    addSection('未分類 (Unclassified)', categories.unclassified);
+  }
+
+  return sections.join('\n');
+}
+
+/**
+ * 2. Web Speech API マネージャー
+ */
+class SpeechRecognitionManager {
+  constructor() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    this.isAvailable = !!SpeechRecognition;
+    this.recognition = this.isAvailable ? new SpeechRecognition() : null;
+
+    this.isListening = false;
+    this.manualStop = false;
+    this.accumulatedText = '';
+    this.interimText = '';
+
+    this.onInterimCallback = null;
+    this.onFinalCallback = null;
+    this.onStatusChangeCallback = null;
+    this.onErrorCallback = null;
+
+    if (this.isAvailable) {
+      this.initRecognition();
+    }
+  }
+
+  isSupported() {
+    return this.isAvailable;
+  }
+
+  initRecognition() {
+    const r = this.recognition;
+    r.continuous = true;
+    r.interimResults = true;
+    r.lang = 'ja-JP';
+    r.maxAlternatives = 1;
+
+    r.onstart = () => {
+      this.isListening = true;
+      if (this.onStatusChangeCallback) {
+        this.onStatusChangeCallback('recording');
+      }
+    };
+
+    r.onresult = (event) => {
+      let interim = '';
+      let finalChunk = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalChunk += transcript;
+        } else {
+          interim += transcript;
+        }
+      }
+
+      this.interimText = interim;
+
+      if (finalChunk) {
+        let chunkToAdd = finalChunk.trim();
+        if (chunkToAdd.length > 0) {
+          if (this.accumulatedText && !this.accumulatedText.endsWith('。') && !this.accumulatedText.endsWith('\n')) {
+            this.accumulatedText += '。';
+          }
+          this.accumulatedText += chunkToAdd;
+        }
+
+        if (this.onFinalCallback) {
+          this.onFinalCallback(this.accumulatedText);
+        }
+      }
+
+      if (this.onInterimCallback) {
+        this.onInterimCallback(this.interimText, this.accumulatedText);
+      }
+    };
+
+    r.onerror = (event) => {
+      let errorMsg = '音声認識エラーが発生しました。';
+      switch (event.error) {
+        case 'not-allowed':
+          errorMsg = 'マイクの使用が許可されていません。ブラウザのアドレスバーからマイクの利用を許可してください。';
+          break;
+        case 'audio-capture':
+          errorMsg = 'マイクが検出されませんでした。マイクの接続設定を確認してください。';
+          break;
+        case 'network':
+          errorMsg = '音声認識サーバーとのネットワーク通信に失敗しました。インターネット接続を確認してください。';
+          break;
+        case 'no-speech':
+          return;
+        case 'aborted':
+          return;
+        default:
+          errorMsg = `音声認識エラー: ${event.error}`;
+      }
+
+      if (this.onErrorCallback) {
+        this.onErrorCallback(errorMsg);
+      }
+    };
+
+    r.onend = () => {
+      if (this.isListening && !this.manualStop) {
+        try {
+          r.start();
+          return;
+        } catch (e) {
+          console.warn('Restart failed:', e);
+        }
+      }
+
+      this.isListening = false;
+      this.interimText = '';
+      if (this.onStatusChangeCallback) {
+        this.onStatusChangeCallback('idle');
+      }
+      if (this.onInterimCallback) {
+        this.onInterimCallback('', this.accumulatedText);
+      }
+    };
+  }
+
+  start(initialText = '', callbacks = {}) {
+    if (!this.isAvailable) {
+      if (callbacks.onError) {
+        callbacks.onError('Web Speech API に対応していません。Google Chrome または Microsoft Edge をご利用ください。');
+      }
+      return false;
+    }
+
+    if (this.isListening) return true;
+
+    this.accumulatedText = initialText || '';
+    this.interimText = '';
+    this.manualStop = false;
+
+    this.onInterimCallback = callbacks.onInterim || null;
+    this.onFinalCallback = callbacks.onFinal || null;
+    this.onStatusChangeCallback = callbacks.onStatusChange || null;
+    this.onErrorCallback = callbacks.onError || null;
+
+    try {
+      this.recognition.start();
+      return true;
+    } catch (err) {
+      if (this.onErrorCallback) {
+        this.onErrorCallback('音声認識の開始に失敗しました。ブラウザのマイク権限をご確認ください。');
+      }
+      return false;
+    }
+  }
+
+  stop() {
+    if (!this.isAvailable || !this.isListening) return;
+    this.manualStop = true;
+    this.isListening = false;
+    try {
+      this.recognition.stop();
+    } catch (err) {
+      console.warn('Error stopping:', err);
+    }
+  }
+
+  getText() { return this.accumulatedText; }
+  setText(text) { this.accumulatedText = text; }
+}
+
+/**
+ * 3. アプリケーション初期化 & イベント結合
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  const btnStartRecord = document.getElementById('btnStartRecord');
+  const btnStopRecord = document.getElementById('btnStopRecord');
+  const btnConvertSoap = document.getElementById('btnConvertSoap');
+  const btnClear = document.getElementById('btnClear');
+  const btnLoadSample = document.getElementById('btnLoadSample');
+  const btnCopyAll = document.getElementById('btnCopyAll');
+  const btnExportTxt = document.getElementById('btnExportTxt');
+
+  const rawTextInput = document.getElementById('rawTextInput');
+  const interimTranscript = document.getElementById('interimTranscript');
+  const liveVoiceWave = document.getElementById('liveVoiceWave');
+  const recordingStatusBadge = document.getElementById('recordingStatusBadge');
+  const statusText = document.getElementById('statusText');
+  const browserWarning = document.getElementById('browserWarning');
+  const errorAlert = document.getElementById('errorAlert');
+  const errorMessage = document.getElementById('errorMessage');
+  const charCount = document.getElementById('charCount');
+  const totalSentenceCount = document.getElementById('totalSentenceCount');
+  const toastNotification = document.getElementById('toastNotification');
+
+  const cardElements = {
+    s: { list: document.getElementById('list-s'), count: document.getElementById('count-s') },
+    o: { list: document.getElementById('list-o'), count: document.getElementById('count-o') },
+    a: { list: document.getElementById('list-a'), count: document.getElementById('count-a') },
+    p: { list: document.getElementById('list-p'), count: document.getElementById('count-p') },
+    unclassified: { list: document.getElementById('list-unclassified'), count: document.getElementById('count-unclassified') }
+  };
+
+  const SAMPLE_TEXT = 
+`右膝の内側がズキズキ痛いと訴えがある。
+夜間も痛みで眠れない日があり、今後の生活に強い不安を感じている。
+膝関節ROMは屈曲110度、伸展-10度であり、軽度の熱感と腫脹を認める。
+大腿四頭筋MMTは右3、左4レベル、歩行速度は通常より低下している。
+疼痛と関節可動域制限による歩行能力の低下が主な問題点と考えられる。
+下肢筋力低下に伴い、階段昇降時の転倒リスクが高いと評価した。
+明日より温熱療法と大腿四頭筋セッティングプログラムを実施する。
+週3回の自主トレ指導を継続し、来月の自宅退院を目標とする。
+本日はご家族の方も同席されました。`;
+
+  const speechManager = new SpeechRecognitionManager();
+
+  if (!speechManager.isSupported()) {
+    browserWarning.classList.remove('hidden');
+    btnStartRecord.disabled = true;
+    btnStartRecord.title = 'お使いのブラウザはWeb Speech APIに対応していません';
+  }
+
+  function updateCharCount() {
+    charCount.textContent = `文字数: ${rawTextInput.value.length}`;
+  }
+
+  rawTextInput.addEventListener('input', updateCharCount);
+
+  let toastTimer = null;
+  function showToast(message) {
+    if (toastTimer) clearTimeout(toastTimer);
+    toastNotification.textContent = message;
+    toastNotification.classList.remove('hidden');
+
+    toastTimer = setTimeout(() => {
+      toastNotification.classList.add('hidden');
+    }, 2800);
+  }
+
+  function showError(msg) {
+    errorMessage.textContent = msg;
+    errorAlert.classList.remove('hidden');
+  }
+
+  function hideError() {
+    errorAlert.classList.add('hidden');
+  }
+
+  function updateRecordingUi(state) {
+    if (state === 'recording') {
+      btnStartRecord.disabled = true;
+      btnStopRecord.disabled = false;
+      liveVoiceWave.classList.remove('hidden');
+      recordingStatusBadge.className = 'status-badge status-recording';
+      statusText.textContent = '録音中...';
+    } else {
+      btnStartRecord.disabled = false;
+      btnStopRecord.disabled = true;
+      liveVoiceWave.classList.add('hidden');
+      interimTranscript.classList.add('hidden');
+      recordingStatusBadge.className = 'status-badge status-idle';
+      statusText.textContent = '待機中';
+    }
+  }
+
+  btnStartRecord.addEventListener('click', () => {
+    hideError();
+    const currentText = rawTextInput.value.trim();
+
+    const success = speechManager.start(currentText, {
+      onInterim: (interim) => {
+        if (interim) {
+          interimTranscript.textContent = `🎤 ${interim}`;
+          interimTranscript.classList.remove('hidden');
+        } else {
+          interimTranscript.classList.add('hidden');
+        }
+      },
+      onFinal: (finalText) => {
+        rawTextInput.value = finalText;
+        updateCharCount();
+        rawTextInput.scrollTop = rawTextInput.scrollHeight;
+      },
+      onStatusChange: (status) => {
+        updateRecordingUi(status);
+      },
+      onError: (errMessage) => {
+        showError(errMessage);
+        updateRecordingUi('idle');
+      }
+    });
+
+    if (success) {
+      updateRecordingUi('recording');
+    }
+  });
+
+  btnStopRecord.addEventListener('click', () => {
+    speechManager.stop();
+    updateRecordingUi('idle');
+
+    const fullText = speechManager.getText();
+    if (fullText) {
+      rawTextInput.value = fullText;
+      updateCharCount();
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    if (speechManager.isListening) speechManager.stop();
+    rawTextInput.value = '';
+    speechManager.setText('');
+    interimTranscript.textContent = '';
+    interimTranscript.classList.add('hidden');
+    updateCharCount();
+    clearSoapCards();
+    hideError();
+  });
+
+  btnLoadSample.addEventListener('click', () => {
+    if (speechManager.isListening) speechManager.stop();
+    rawTextInput.value = SAMPLE_TEXT.trim();
+    speechManager.setText(SAMPLE_TEXT.trim());
+    updateCharCount();
+    hideError();
+    executeSoapConversion();
+    showToast('サンプル文章を読み込み、SOAP変換を行いました');
+  });
+
+  function clearSoapCards() {
+    ['s', 'o', 'a', 'p', 'unclassified'].forEach(cat => {
+      cardElements[cat].list.innerHTML = '<div class="empty-state">該当する情報はありません</div>';
+      cardElements[cat].count.textContent = '0 件';
+    });
+    totalSentenceCount.textContent = '全 0 文';
+  }
+
+  function executeSoapConversion() {
+    const text = rawTextInput.value.trim();
+    if (!text) {
+      showError('振り分ける文章がありません。音声を録音するかテキストを入力してください。');
+      return;
+    }
+    hideError();
+
+    const classification = classifySoapText(text);
+
+    renderCategory('s', classification.categories.s);
+    renderCategory('o', classification.categories.o);
+    renderCategory('a', classification.categories.a);
+    renderCategory('p', classification.categories.p);
+    renderCategory('unclassified', classification.categories.unclassified);
+
+    totalSentenceCount.textContent = `全 ${classification.sentences.length} 文`;
+
+    if (window.innerWidth <= 768) {
+      document.querySelector('.soap-results-section').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function renderCategory(catKey, items) {
+    const container = cardElements[catKey].list;
+    const countBadge = cardElements[catKey].count;
+
+    countBadge.textContent = `${items.length} 件`;
+
+    if (items.length === 0) {
+      container.innerHTML = '<div class="empty-state">該当する情報はありません</div>';
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    ul.className = 'soap-item-list';
+
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'soap-item';
+      
+      const textDiv = document.createElement('div');
+      textDiv.className = 'soap-item-text';
+      textDiv.innerHTML = item.html;
+      li.appendChild(textDiv);
+
+      if (item.keywords && item.keywords.length > 0) {
+        const tagsDiv = document.createElement('div');
+        tagsDiv.className = 'soap-item-tags';
+        item.keywords.forEach(kw => {
+          const tag = document.createElement('span');
+          tag.className = 'soap-kw-tag';
+          tag.textContent = kw;
+          tagsDiv.appendChild(tag);
+        });
+        li.appendChild(tagsDiv);
+      }
+
+      ul.appendChild(li);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(ul);
+  }
+
+  btnConvertSoap.addEventListener('click', () => {
+    executeSoapConversion();
+  });
+
+  document.querySelectorAll('.btn-copy-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      const card = document.getElementById(`card-${target}`);
+      const items = card.querySelectorAll('.soap-item');
+
+      if (items.length === 0) {
+        showToast('コピーする内容がありません');
+        return;
+      }
+
+      const title = card.querySelector('.soap-name').textContent;
+      const textList = Array.from(items).map(item => {
+        const textElem = item.querySelector('.soap-item-text');
+        return '・' + (textElem ? textElem.textContent.trim() : item.textContent.trim());
+      }).join('\n');
+      const textToCopy = `【${title}】\n${textList}`;
+
+      copyToClipboard(textToCopy, `${title.split('（')[0]} をコピーしました`);
+    });
+  });
+
+  btnCopyAll.addEventListener('click', () => {
+    const text = rawTextInput.value.trim();
+    if (!text) {
+      showToast('コピーする内容がありません');
+      return;
+    }
+
+    const classification = classifySoapText(text);
+    const formatted = formatSoapAsText(classification);
+    copyToClipboard(formatted, 'SOAP形式全文をコピーしました');
+  });
+
+  btnExportTxt.addEventListener('click', () => {
+    const text = rawTextInput.value.trim();
+    if (!text) {
+      showToast('保存する内容がありません');
+      return;
+    }
+
+    const classification = classifySoapText(text);
+    const formatted = formatSoapAsText(classification);
+    
+    const blob = new Blob([formatted], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+    a.href = url;
+    a.download = `SOAPノート_${dateStr}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('テキストファイルを保存しました');
+  });
+
+  function copyToClipboard(text, successMessage) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMessage);
+      }).catch(err => {
+        fallbackCopyTextToClipboard(text, successMessage);
+      });
+    } else {
+      fallbackCopyTextToClipboard(text, successMessage);
+    }
+  }
+
+  function fallbackCopyTextToClipboard(text, successMessage) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) showToast(successMessage);
+      else showToast('コピーに失敗しました');
+    } catch (err) {
+      showToast('コピーに失敗しました');
+    }
+    document.body.removeChild(textArea);
+  }
+
+  updateCharCount();
+});
+  </script>
+</body>
+</html>

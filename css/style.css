@@ -1,0 +1,991 @@
+/* ==========================================================================
+   音声入力SOAPノート - スタイルシート (Modern, Clean, Responsive)
+   ========================================================================== */
+
+:root {
+  /* 基本カラーパレット */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-main: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-focus: #3b82f6;
+
+  /* SOAP固有カラー */
+  /* S: 主観的情報 (青系) */
+  --soap-s-main: #2563eb;
+  --soap-s-bg: #eff6ff;
+  --soap-s-border: #bfdbfe;
+  --soap-s-badge: #dbeafe;
+  --soap-s-text: #1e40af;
+  --soap-s-highlight: #bfdbfe;
+
+  /* O: 客観的情報 (緑系) */
+  --soap-o-main: #16a34a;
+  --soap-o-bg: #f0fdf4;
+  --soap-o-border: #bbf7d0;
+  --soap-o-badge: #dcfce7;
+  --soap-o-text: #166534;
+  --soap-o-highlight: #bbf7d0;
+
+  /* A: 評価・分析 (黄・アンバー系) */
+  --soap-a-main: #d97706;
+  --soap-a-bg: #fffbeb;
+  --soap-a-border: #fde68a;
+  --soap-a-badge: #fef3c7;
+  --soap-a-text: #92400e;
+  --soap-a-highlight: #fde68a;
+
+  /* P: 治療・支援計画 (赤系) */
+  --soap-p-main: #dc2626;
+  --soap-p-bg: #fef2f2;
+  --soap-p-border: #fecaca;
+  --soap-p-badge: #fee2e2;
+  --soap-p-text: #991b1b;
+  --soap-p-highlight: #fecaca;
+
+  /* 未分類 (グレー系) */
+  --soap-u-main: #64748b;
+  --soap-u-bg: #f8fafc;
+  --soap-u-border: #e2e8f0;
+  --soap-u-badge: #f1f5f9;
+  --soap-u-text: #334155;
+
+  /* UIアクセント */
+  --accent-record: #ef4444;
+  --accent-record-hover: #dc2626;
+  --accent-primary: #2563eb;
+  --accent-primary-hover: #1d4ed8;
+
+  /* 角丸 & 影 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+
+  /* タイポグラフィ */
+  --font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Meiryo", sans-serif;
+}
+
+/* リセット & 基本設定 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: #f8fafc;
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* アプリケーション全体コンテナ */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   ヘッダー
+   ========================================================================== */
+.app-header {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 20px 28px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+  flex-shrink: 0;
+}
+
+.header-title-wrap h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.header-title-wrap .subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   メインエリア & カード共通
+   ========================================================================== */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title-with-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* 録音状態バッジ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.status-idle {
+  background-color: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.status-recording {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* ==========================================================================
+   ボタン類スタイル
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+  user-select: none;
+  text-decoration: none;
+  min-height: 42px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  min-height: 34px;
+}
+
+/* 録音開始ボタン */
+.btn-record {
+  background: var(--accent-record);
+  color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+}
+
+.btn-record:hover:not(:disabled) {
+  background: var(--accent-record-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+.record-pulse-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+/* 録音停止ボタン */
+.btn-stop {
+  background: #ffffff;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.btn-stop:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.stop-icon {
+  width: 10px;
+  height: 10px;
+  background-color: #dc2626;
+  border-radius: 2px;
+}
+
+/* プライマリボタン (SOAP変換) */
+.btn-primary {
+  background: var(--accent-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* セカンダリボタン */
+.btn-secondary {
+  background: #ffffff;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: #cbd5e1;
+}
+
+/* テキストボタン */
+.btn-text {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+
+.btn-text:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-main);
+}
+
+/* コントロールツールバー */
+.controls-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.primary-controls, .secondary-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   音声認識アニメーションバー
+   ========================================================================== */
+.voice-wave-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  color: #1d4ed8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.wave-bar {
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: #3b82f6;
+  border-radius: 2px;
+  animation: wave-animation 1.2s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.wave-bar:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes wave-animation {
+  0%, 100% { height: 8px; opacity: 0.5; }
+  50% { height: 22px; opacity: 1; }
+}
+
+.wave-text {
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   アラートコンポーネント
+   ========================================================================== */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+}
+
+.alert-warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.alert-danger {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.alert-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.alert-body strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ==========================================================================
+   テキストエディタ
+   ========================================================================== */
+.editor-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.text-editor {
+  width: 100%;
+  min-height: 140px;
+  padding: 16px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-main);
+  background: #ffffff;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.text-editor:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.text-editor::placeholder {
+  color: #94a3b8;
+  font-size: 0.9375rem;
+}
+
+/* 認識中の中間結果表示 */
+.interim-text {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 3px solid #3b82f6;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  color: #2563eb;
+  font-style: italic;
+  pointer-events: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.editor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.hint-text {
+  font-size: 0.775rem;
+}
+
+/* ==========================================================================
+   SOAP 結果セクション
+   ========================================================================== */
+.soap-results-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.results-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.results-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.badge-count {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.results-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* SOAP グリッドレイアウト (2列デスクトップ、1列スマホ) */
+.soap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .soap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* SOAP 各カードデザイン */
+.soap-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-top-width: 4px;
+  border-top-style: solid;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.soap-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* S=青, O=緑, A=黄, P=赤, 未分類=グレー */
+.soap-card-s {
+  border-top-color: var(--soap-s-main);
+}
+.soap-card-s .soap-letter {
+  background: var(--soap-s-main);
+  color: #ffffff;
+}
+.soap-card-s .soap-count {
+  background: var(--soap-s-badge);
+  color: var(--soap-s-text);
+}
+.soap-card-s .soap-card-header {
+  background: var(--soap-s-bg);
+}
+
+.soap-card-o {
+  border-top-color: var(--soap-o-main);
+}
+.soap-card-o .soap-letter {
+  background: var(--soap-o-main);
+  color: #ffffff;
+}
+.soap-card-o .soap-count {
+  background: var(--soap-o-badge);
+  color: var(--soap-o-text);
+}
+.soap-card-o .soap-card-header {
+  background: var(--soap-o-bg);
+}
+
+.soap-card-a {
+  border-top-color: var(--soap-a-main);
+}
+.soap-card-a .soap-letter {
+  background: var(--soap-a-main);
+  color: #ffffff;
+}
+.soap-card-a .soap-count {
+  background: var(--soap-a-badge);
+  color: var(--soap-a-text);
+}
+.soap-card-a .soap-card-header {
+  background: var(--soap-a-bg);
+}
+
+.soap-card-p {
+  border-top-color: var(--soap-p-main);
+}
+.soap-card-p .soap-letter {
+  background: var(--soap-p-main);
+  color: #ffffff;
+}
+.soap-card-p .soap-count {
+  background: var(--soap-p-badge);
+  color: var(--soap-p-text);
+}
+.soap-card-p .soap-card-header {
+  background: var(--soap-p-bg);
+}
+
+.soap-card-unclassified {
+  border-top-color: var(--soap-u-main);
+  margin-top: 4px;
+}
+.soap-card-unclassified .soap-letter {
+  background: var(--soap-u-main);
+  color: #ffffff;
+}
+.soap-card-unclassified .soap-count {
+  background: var(--soap-u-badge);
+  color: var(--soap-u-text);
+}
+.soap-card-unclassified .soap-card-header {
+  background: var(--soap-u-bg);
+}
+
+/* カードヘッダー */
+.soap-card-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.soap-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.soap-letter {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.soap-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.soap-desc {
+  font-size: 0.775rem;
+  color: var(--text-secondary);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.soap-count {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
+.btn-copy-card {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-copy-card:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-main);
+  border-color: #cbd5e1;
+}
+
+/* カードボディ */
+.soap-card-body {
+  padding: 18px 20px;
+  min-height: 120px;
+  flex-grow: 1;
+}
+
+.empty-state {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  background: #fafafa;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-color);
+}
+
+/* 分類された文のリスト */
+.soap-item-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.soap-item {
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border-left: 3px solid transparent;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  position: relative;
+  transition: background-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.soap-item-text {
+  word-break: break-word;
+}
+
+.soap-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.soap-kw-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+}
+
+.soap-item:hover {
+  background: #f1f5f9;
+}
+
+.soap-card-s .soap-item {
+  border-left-color: var(--soap-s-main);
+}
+.soap-card-o .soap-item {
+  border-left-color: var(--soap-o-main);
+}
+.soap-card-a .soap-item {
+  border-left-color: var(--soap-a-main);
+}
+.soap-card-p .soap-item {
+  border-left-color: var(--soap-p-main);
+}
+.soap-card-unclassified .soap-item {
+  border-left-color: var(--soap-u-main);
+}
+
+/* キーワードハイライトマーク */
+.kw-highlight {
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.soap-card-s .kw-highlight {
+  background-color: var(--soap-s-highlight);
+  color: var(--soap-s-text);
+}
+.soap-card-o .kw-highlight {
+  background-color: var(--soap-o-highlight);
+  color: var(--soap-o-text);
+}
+.soap-card-a .kw-highlight {
+  background-color: var(--soap-a-highlight);
+  color: var(--soap-a-text);
+}
+.soap-card-p .kw-highlight {
+  background-color: var(--soap-p-highlight);
+  color: var(--soap-p-text);
+}
+
+/* カードフッター */
+.soap-card-footer {
+  padding: 10px 20px;
+  background: #ffffff;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.keywords-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.keyword-tags {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   トースト通知
+   ========================================================================== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.hidden {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   フッター
+   ========================================================================== */
+.app-footer {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  padding: 16px 0;
+}
+
+/* ==========================================================================
+   レスポンシブ調整 (モバイル・タブレット)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 16px 12px 32px;
+    gap: 18px;
+  }
+
+  .app-header {
+    padding: 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    width: 100%;
+  }
+
+  .controls-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primary-controls, .secondary-controls {
+    width: 100%;
+  }
+
+  .primary-controls .btn, .secondary-controls .btn {
+    flex: 1;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .results-actions {
+    width: 100%;
+  }
+
+  .results-actions .btn {
+    flex: 1;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
+    justify-content: center;
+  }
+}

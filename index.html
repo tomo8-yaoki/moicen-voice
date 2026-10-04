@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音声入力SOAPノート</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="header-title-wrap">
+          <div class="logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="22"></line>
+              <line x1="8" y1="22" x2="16" y2="22"></line>
+            </svg>
+          </div>
+          <div>
+            <h1>音声入力SOAPノート</h1>
+            <p class="subtitle">音声でカルテ・経過記録を話すだけで、SOAP形式に自動振り分け</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btnLoadSample" class="btn btn-secondary btn-sm" title="医療・リハビリのサンプル文章をセットします">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            サンプル文章を入力
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <!-- 音声入力コントロールパネル -->
+      <section class="card input-section" aria-labelledby="input-heading">
+        <div class="card-header">
+          <div class="title-with-badge">
+            <h2 id="input-heading" class="card-title">音声入力・テキスト確認</h2>
+            <span id="recordingStatusBadge" class="status-badge status-idle">
+              <span class="status-dot"></span>
+              <span id="statusText">待機中</span>
+            </span>
+          </div>
+          <div class="action-btn-group">
+            <button id="btnClear" class="btn btn-text btn-sm" title="テキストを消去">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              クリア
+            </button>
+          </div>
+        </div>
+
+        <!-- コントロールボタン群 -->
+        <div class="controls-toolbar">
+          <div class="primary-controls">
+            <button id="btnStartRecord" class="btn btn-record">
+              <span class="record-pulse-icon" aria-hidden="true"></span>
+              <span class="btn-text">録音開始</span>
+            </button>
+            <button id="btnStopRecord" class="btn btn-stop" disabled>
+              <span class="stop-icon" aria-hidden="true"></span>
+              <span class="btn-text">録音停止</span>
+            </button>
+          </div>
+          <div class="secondary-controls">
+            <button id="btnConvertSoap" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>SOAP変換</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- リアルタイム認識アニメーションインジケーター -->
+        <div id="liveVoiceWave" class="voice-wave-container hidden" aria-live="polite">
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-text">音声をリアルタイムで聞き取っています...</span>
+        </div>
+
+        <!-- ブラウザ非対応警告（非対応ブラウザのみ表示） -->
+        <div id="browserWarning" class="alert alert-warning hidden" role="alert">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-body">
+            <strong>お使いのブラウザは Web Speech API に対応していません。</strong>
+            Google Chrome または Microsoft Edge でご利用いただくか、下の入力欄に直接テキストを入力・ペーストして「SOAP変換」をお試しください。
+          </div>
+        </div>
+
+        <!-- マイク権限・エラー案内 -->
+        <div id="errorAlert" class="alert alert-danger hidden" role="alert">
+          <div class="alert-icon">❌</div>
+          <div class="alert-body" id="errorMessage">エラーが発生しました。</div>
+        </div>
+
+        <!-- テキストエリア（リアルタイム表示 ＆ 直接編集可能） -->
+        <div class="editor-wrap">
+          <label for="rawTextInput" class="sr-only">認識テキスト</label>
+          <textarea 
+            id="rawTextInput" 
+            class="text-editor" 
+            placeholder="「録音開始」を押してマイクに向かって話すか、直接テキストを入力してください。&#10;&#10;例：&#10;「右膝がズキズキ痛いと訴えがある。膝関節ROMは屈曲110度、歩行スピードは低下している。大腿四頭筋の筋力低下が原因と考えられる。週3回の自主トレ指導と歩行プログラムを実施する。」"
+            rows="6"
+          ></textarea>
+          <!-- 認識中の暫定テキストオーバーレイ -->
+          <div id="interimTranscript" class="interim-text hidden" aria-live="polite"></div>
+        </div>
+
+        <div class="editor-footer">
+          <span id="charCount" class="text-muted">文字数: 0</span>
+          <span class="text-muted hint-text">※ 句点（。）や改行ごとに文章を自動分割してSOAPに振り分けます</span>
+        </div>
+      </section>
+
+      <!-- SOAP出力結果セクション -->
+      <section class="soap-results-section" aria-labelledby="soap-heading">
+        <div class="results-header">
+          <div class="results-title-group">
+            <h2 id="soap-heading" class="results-title">SOAP分析結果</h2>
+            <span id="totalSentenceCount" class="badge-count">全 0 文</span>
+          </div>
+          <div class="results-actions">
+            <button id="btnCopyAll" class="btn btn-secondary btn-sm" title="SOAP全体をクリップボードにコピー">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              全項目をコピー
+            </button>
+            <button id="btnExportTxt" class="btn btn-secondary btn-sm" title="テキストファイルとして保存">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              書き出し
+            </button>
+          </div>
+        </div>
+
+        <!-- 4つのSOAPカード + 未分類カード -->
+        <div class="soap-grid">
+          <!-- S (主観的情報) -->
+          <article class="soap-card soap-card-s" id="card-s">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">S</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Subjective（主観的情報）</h3>
+                  <p class="soap-desc">患者の自覚症状・訴え・不安・睡眠など</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-s">0 件</span>
+                <button class="btn-copy-card" data-target="s" title="Sセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-s">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">痛い, つらい, しびれる, だるい, 動かしにくい, 不安, 眠れない, 訴え</span>
+            </footer>
+          </article>
+
+          <!-- O (客観的情報) -->
+          <article class="soap-card soap-card-o" id="card-o">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">O</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Objective（客観的情報）</h3>
+                  <p class="soap-desc">ROM・MMT・測定値・バイタル・歩行観察など</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-o">0 件</span>
+                <button class="btn-copy-card" data-target="o" title="Oセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-o">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">ROM, MMT, 度, cm, kg, mmHg, 回, 秒, 歩行, 握力, バイタル, 腫脹, 熱感, 発赤</span>
+            </footer>
+          </article>
+
+          <!-- A (評価) -->
+          <article class="soap-card soap-card-a" id="card-a">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">A</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Assessment（評価・分析）</h3>
+                  <p class="soap-desc">原因分析・問題点の抽出・改善度・リスク判定</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-a">0 件</span>
+                <button class="btn-copy-card" data-target="a" title="Aセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-a">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">考えられる, 原因, 問題, 改善, 低下, 制限, リスク, 評価</span>
+            </footer>
+          </article>
+
+          <!-- P (計画) -->
+          <article class="soap-card soap-card-p" id="card-p">
+            <header class="soap-card-header">
+              <div class="soap-badge-title">
+                <span class="soap-letter">P</span>
+                <div class="soap-title-wrap">
+                  <h3 class="soap-name">Plan（治療・支援計画）</h3>
+                  <p class="soap-desc">プログラム・自主トレ指導・目標設定・退院支援</p>
+                </div>
+              </div>
+              <div class="card-meta">
+                <span class="soap-count" id="count-p">0 件</span>
+                <button class="btn-copy-card" data-target="p" title="Pセクションをコピー">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="soap-card-body" id="list-p">
+              <div class="empty-state">該当する情報はありません</div>
+            </div>
+            <footer class="soap-card-footer">
+              <span class="keywords-label">検出キーワード例:</span>
+              <span class="keyword-tags">プログラム, 目標, 実施, 継続, 指導, 週, セット, 退院, 自主トレ</span>
+            </footer>
+          </article>
+        </div>
+
+        <!-- 未分類セクション -->
+        <article class="soap-card soap-card-unclassified" id="card-unclassified">
+          <header class="soap-card-header">
+            <div class="soap-badge-title">
+              <span class="soap-letter">?</span>
+              <div class="soap-title-wrap">
+                <h3 class="soap-name">未分類（Unclassified）</h3>
+                <p class="soap-desc">指定キーワードに一致しなかった文</p>
+              </div>
+            </div>
+            <div class="card-meta">
+              <span class="soap-count" id="count-unclassified">0 件</span>
+              <button class="btn-copy-card" data-target="unclassified" title="未分類セクションをコピー">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </header>
+          <div class="soap-card-body" id="list-unclassified">
+            <div class="empty-state">該当する情報はありません</div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- コピー完了トースト通知 -->
+    <div id="toastNotification" class="toast hidden" role="status" aria-live="polite">
+      クリップボードにコピーしました
+    </div>
+
+    <!-- フッター -->
+    <footer class="app-footer">
+      <p>音声入力SOAPノート &copy; 2026 — ブラウザ標準の Web Speech API を活用したセキュアなローカル処理</p>
+    </footer>
+  </div>
+
+  <!-- スクリプト読み込み -->
+  <script src="js/soap.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
